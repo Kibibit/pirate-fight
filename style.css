@@ -20,6 +20,17 @@ body {
   font-size: 10px;
 }
 
+.progress-bar {
+    justify-content: center;
+    width: 0%;
+    height: 20px;
+    background: rgb(76, 175, 80);
+    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
 .start-screen {
   display: flex;
   align-items: center;
