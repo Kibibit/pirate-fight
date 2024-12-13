@@ -66,7 +66,7 @@ timeline
       ),
     "+=12"
   )
-  .add(() => showTextBox("AR! AR! ARR!...", 0.3), "+=13")
+  .add(() => showTextBox("AR! AR! ARR!...", 0.25), "+=13")
   .add(
     () =>
       showTextBox(
