@@ -7,18 +7,18 @@ const audioSecondOption = new Audio(
 );
 
 audio.volume = 0.2;
-audio2.volume = 0.2;
+audioSecondOption.volume = 0.2;
 // Pre-load the audio file
 audio.preload = 'auto';
-audio2.preload = 'auto';
+audioSecondOption.preload = 'auto';
 
 const clickMeBtn = document.querySelector(".click-me");
 const progressBar = document.querySelector(".progress-bar"); // Assume this exists in your HTML
 clickMeBtn.disabled = true; // Initially disable the button
 
 // Listen to the 'progress' event to update the progress bar
-audio2.addEventListener('progress', () => {
-  if (audio.buffered.length > 0) {
+audioSecondOption.addEventListener('progress', () => {
+  if (audioSecondOption.buffered.length > 0) {
     const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
     const duration = audio.duration || 1; // Fallback to 1 to prevent division by zero
     const percentage = Math.min((bufferedEnd / duration) * 100, 100);
@@ -28,7 +28,7 @@ audio2.addEventListener('progress', () => {
 });
 
 // Enable the button when the audio is fully loaded
-audio2.addEventListener('canplaythrough', () => {
+audioSecondOption.addEventListener('canplaythrough', () => {
   clickMeBtn.disabled = false; // Enable the button
   progressBar.style.width = '100%';
   progressBar.textContent = '100% Loaded';
@@ -72,7 +72,7 @@ const timeline = gsap.timeline({}).pause();
 timeline
   .to(".start-screen", { display: "none" })
   .to(".scene", { opacity: 1, duration: 1 })
-  .call(() => audio2.play(), [], "+=2")
+  .call(() => audioSecondOption.play(), [], "+=2")
   .add(() =>
     showTextBox(
       `Arrr, welcome, ye scallywag! Ye dare stand before me, Captain Patchbeard, <span class="shake-little shake-constant kb-mad">THE TERROR O' THE TECH SEAS</span>!`
