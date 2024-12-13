@@ -3,6 +3,33 @@ const audio = new Audio(
 );
 
 audio.volume = 0.2;
+// Pre-load the audio file
+audio.preload = 'auto';
+
+const clickMeBtn = document.querySelector(".click-me");
+const progressBar = document.querySelector(".progress-bar"); // Assume this exists in your HTML
+clickMeBtn.disabled = true; // Initially disable the button
+
+// Listen to the 'progress' event to update the progress bar
+audio.addEventListener('progress', () => {
+  if (audio.buffered.length > 0) {
+    const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
+    const duration = audio.duration || 1; // Fallback to 1 to prevent division by zero
+    const percentage = Math.min((bufferedEnd / duration) * 100, 100);
+    progressBar.style.width = `${percentage}%`;
+    progressBar.textContent = `${Math.round(percentage)}%`;
+  }
+});
+
+// Enable the button when the audio is fully loaded
+audio.addEventListener('canplaythrough', () => {
+  clickMeBtn.disabled = false; // Enable the button
+  progressBar.style.width = '100%';
+  progressBar.textContent = '100% Loaded';
+});
+
+// Optionally load it immediately
+audio.load();
 
 function showTextBox(text, totalTime = 0.06) {
   const textBoxText = document.getElementById("textbox");
@@ -90,8 +117,6 @@ timeline
     "+=11"
   )
   .to(".start-game-btn-container", { opacity: 1 });
-
-const clickMeBtn = document.querySelector(".click-me");
 
 clickMeBtn.addEventListener("click", () => {
   timeline.play();
