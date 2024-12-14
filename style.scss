@@ -1,0 +1,320 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Press+Start+2P&family=Righteous&display=swap");
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100dvw;
+    height: 100dvh;
+    background: #212121;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Press Start 2P", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 10px;
+}
+
+.start-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100dvw;
+    height: 100dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.scene {
+    opacity: 0;
+    // background: pink;
+    // background: #92c89c;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+
+    .background {
+        width: 100%;
+        height: calc(100% - 200px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-size: cover;
+        background-position: 50% bottom;
+        background-image: url(https://kibibit.io/kibibit-assets/achievibit-test/bg-pirates.webp);
+        z-index: 1;
+    }
+}
+
+.rpg-text-box {
+    overflow: hidden;
+    color: black;
+    height: 100px;
+    left: 50%;
+    position: absolute;
+    bottom: 0;
+    transform: translate(-50%, calc(100% + 50px + 50px));
+    max-width: 500px;
+    width: 80vw;
+    line-height: 1.5em;
+    margin: 2em 0 80px;
+    background: white;
+    border: 1px solid white;
+    padding: 1em;
+    font-size: 0.7rem;
+    font-family: "Press Start 2P", cursive;
+    font-weight: bolder;
+    border-radius: 0.2em;
+    box-shadow: 0 1px 0 1px black, inset 0 1px 0 1px black, 0 0 0 1px black,
+        inset 0 0 0 1px black, 3px 5px 0px 1px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transition: all 250ms;
+    z-index: 10;
+
+    &.cont-dot:after {
+        opacity: 1;
+    }
+
+    &:after {
+        opacity: 0;
+        content: "";
+        display: block;
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: currentColor;
+        bottom: 1em;
+        right: 1em;
+
+        animation: gelatine 1s infinite;
+        transition: 250ms opacity;
+    }
+}
+
+@media (max-width: 520px) {
+    .rpg-text-box {
+        font-size: 0.5rem;
+    }
+}
+
+.rpg-text-box.visible {
+    opacity: 1;
+    transform: translate(-50%);
+}
+
+.gelatine {
+    animation: gelatine 0.5s infinite;
+}
+
+@keyframes gelatine {
+
+    from,
+    to {
+        transform: scale(1, 1);
+    }
+
+    25% {
+        transform: scale(0.9, 1.1);
+    }
+
+    50% {
+        transform: scale(1.1, 0.9);
+    }
+
+    75% {
+        transform: scale(0.95, 1.05);
+    }
+}
+
+.kb-mad {
+    display: inline-block;
+    color: hsl(348, 100%, 61%);
+}
+
+.kb-important {
+    display: inline-block;
+    color: hsl(217, 71%, 53%);
+}
+
+.start-game-btn-container {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    opacity: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+}
+
+button {
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    background: hsl(217, 71%, 53%);
+    padding: 1.5em;
+    cursor: pointer;
+}
+
+.highlight {
+    position: relative;
+
+    &:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        height: 2px;
+        background: black;
+        top: calc(100% + 0.1em);
+        animation: width-to-full 1s ease-out forwards 4s;
+    }
+}
+
+@keyframes width-to-full {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+.choices-container {
+    opacity: 0;
+    position: absolute;
+    bottom: 53px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    font-size: 0.9em;
+    line-height: 1.5em;
+
+    &.decision-made .choice:not(.highlighted) {
+        color: grey;
+    }
+
+    &.decision-made.success .choice.highlighted {
+        color: hsl(141, 71%, 48%);
+    }
+
+    &.decision-made.failure .choice.highlighted {
+        color: hsl(348, 100%, 61%);
+    }
+}
+
+.choice {
+    position: absolute;
+    width: max-content;
+    max-width: 250px;
+    opcaity: 0;
+    --padding: 2em;
+    --color-sides: hsl(204, 86%, 53%);
+    --color: hsl(234, 100%, 74%);
+
+    &.top,
+    &.bottom {
+        max-width: 430px;
+    }
+
+    &.top {
+        top: 0;
+        transform: translateY(-100%);
+        padding-bottom: calc(1.5 * var(--padding));
+        color: var(--color);
+        text-align: center;
+    }
+
+    &.bottom {
+        bottom: 0;
+        transform: translateY(100%);
+        padding-top: var(--padding);
+        color: var(--color);
+        text-align: center;
+    }
+
+    &.left {
+        left: 0;
+        transform: translateX(-100%);
+        padding-right: calc(2.5 * var(--padding));
+        color: var(--color-sides);
+        text-align: right;
+    }
+
+    &.right {
+        right: 0;
+        transform: translateX(100%);
+        padding-left: calc(2.5 * var(--padding));
+        color: var(--color-sides);
+        text-align: left;
+    }
+}
+
+.keys {
+    position: absolute;
+    --key-size: 18px;
+    font-family: "Lato", sans-serif;
+    text-align: center;
+    width: calc(var(--key-size) * 5);
+    height: calc(3 * var(--key-size));
+    margin: auto;
+}
+
+.arr {
+    --darkenGrey20: color.adjust(grey, $lightness: -20%);
+    --darkenGrey15: color.adjust(grey, $lightness: -15%);
+    --darkenGrey10: color.adjust(grey, $lightness: -10%);
+    cursor: pointer;
+    width: var(--key-size);
+    height: var(--key-size);
+    text-align: center;
+    line-height: var(--key-size);
+    background: grey;
+    color: white;
+    font-size: calc(var(--key-size) / 2);
+    border-right: calc(var(--key-size) / 10) solid var(--darkenGrey20);
+    border-bottom: calc(var(--key-size) / 10) solid var(--darkenGrey20);
+    border-left: calc(var(--key-size) / 10) solid var(--darkenGrey15);
+    border-top: calc(var(--key-size) / 10) solid var(--darkenGrey10);
+    display: inline-block;
+    margin: calc(var(--key-size) / 20);
+    transition: all 0.05s linear;
+
+    &:active {
+        border-bottom: calc(var(--key-size) / 12) solid var(--darkenGrey20);
+        transform: translate(0, calc(var(--key-size) / 50));
+    }
+
+    user-select: none;
+}
+
+.up {
+    position: relative;
+    top: calc(-1 * (var(--key-size) / 25));
+}
+
+.pressed {
+    border-bottom: calc(var(--key-size) / 12) solid var(--darkenGrey20);
+    transform: translate(0, calc(var(--key-size) / 50));
+}
