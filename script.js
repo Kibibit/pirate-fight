@@ -2,6 +2,9 @@ let gameStarted = false; // Flag to track if the game has started
 let selectedChoiceDirection = null; // Tracks the currently selected choice
 let currentTaunt = null;
 const getRandomTaunt = getTauntsShuffler();
+const questionTimer = 10; // Time in seconds to answer each question
+let currentTimerAnimation = null; // Tracks the current timer animation timeline
+let interactionAllowed = true; // Flag to track if user interaction is allowed
 
 let isAnimating = false; // Tracks if character animation is running
 let currentLabelIndex = 0; // Tracks the current label index in the timeline
@@ -141,6 +144,7 @@ startGameBtn.addEventListener("click", () => {
 
   const fightTimeline = gsap.timeline({}).pause();
   const choicesContainer = document.querySelector(".choices-container");
+  const timerCssRule = CSSRulePlugin.getRule(".rpg-text-box:before");
 
   fightTimeline
     .to(".start-game-btn-container", { opacity: 0, display: "none" })
@@ -150,8 +154,23 @@ startGameBtn.addEventListener("click", () => {
     .call(() => (currentTaunt = getRandomTaunt()))
     .add(() => showTextBox(currentTaunt.text))
     .add(() => changeOptions(currentTaunt.options), "+=1")
+    // add class timer and set data-timer-total and update data-timer-current. should be 6 seconds
+    .add(() => showTimer(questionTimer), "+=1")
     .play();
 });
+
+function showTimer(secondsTotal = questionTimer) {
+  const timerCssRule = CSSRulePlugin.getRule(".rpg-text-box:before");
+  const timerTimeline = gsap.timeline({});
+  currentTimerAnimation = timerTimeline;
+
+  timerTimeline
+    .to(timerCssRule, 0.3, { cssRule: { width: "100%" } })
+    // count down the timer
+    .to(timerCssRule, secondsTotal, { cssRule: { width: '0%' } }, "+=1");
+
+  return timerTimeline;;
+}
 
 function hideChoices() {
   const hideChoicesTimeline = gsap.timeline({}).pause();
@@ -187,6 +206,8 @@ function highlightChoice(direction) {
   const allChoices = choicesContainer.querySelector(".choice");
 
   highlightTimeline
+    .call(() => interactionAllowed = false)
+    .call(() => currentTimerAnimation.kill())
     .call(() => {
       choicesContainer.classList.add("decision-made");
       selectedChoice.classList.add("highlighted");
@@ -206,13 +227,15 @@ function highlightChoice(direction) {
     })
     .call(() => (currentTaunt = getRandomTaunt()))
     .add(() => showTextBox(currentTaunt.text))
-    .add(() => changeOptions(currentTaunt.options), "+=1");
+    .add(() => changeOptions(currentTaunt.options), "+=1")
+    .call(() => interactionAllowed = true)
+    .add(() => showTimer(questionTimer), "+=1");
 
   return highlightTimeline.play();
 }
 
 document.addEventListener("keydown", (event) => {
-  if (gameStarted) {
+  if (gameStarted && interactionAllowed) {
     if (event.code === "ArrowUp") {
       highlightChoice("top");
     } else if (event.code === "ArrowDown") {
