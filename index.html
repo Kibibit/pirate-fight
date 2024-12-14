@@ -6,27 +6,36 @@
   <title>achievibit: Pirate Fight</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel='stylesheet' href='https://csshake.surge.sh/csshake.min.css'>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" href="./style.css">
 
 </head>
 <body>
-<!-- partial:index.partial.html -->
-<div class="start-screen">
-  <button class="click-me">START</button>
-  <div class="progress-container" style="width: 300px; background: #ddd; position: relative;">
-    <div class="progress-bar"></div>
+  <div class="start-screen">
+    <button class="click-me">START</button>
   </div>
-</div>
-<div class="scene">
-  <div class="background"></div>
-  <div class="rpg-text-box" id="textbox">
-    ARRR!
+  <div class="scene">
+    <div class="background"></div>
+    <div class="rpg-text-box" id="textbox">
+      ARRR!
+    </div>
+    <div class="start-game-btn-container">
+      <button class="start-game-btn">I'm Ready!</button>
+    </div>
+    <div class="choices-container">
+      <div class="keys">
+        <div class="up arr"><i class="fa fa-arrow-up"></i></div>
+        <br />
+        <div class="left arr"><i class="fa fa-arrow-left"></i></div>
+        <div class="down arr"><i class="fa fa-arrow-down"></i></div>
+        <div class="right arr"><i class="fa fa-arrow-right"></i></div>
+      </div>
+      <div class="top choice"></div>
+      <div class="left choice"></div>
+      <div class="right choice"></div>
+      <div class="bottom choice"></div>
+    </div>
   </div>
-  <div class="start-game-btn-container">
-    <button class="start-game-btn">I'm Ready!</button>
-  </div>
-</div>
-<!-- partial -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <!-- The following plugin is only available for Club GSAP members.--> 
   <script src="./SplitText.min.js"></script>
