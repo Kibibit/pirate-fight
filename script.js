@@ -144,7 +144,6 @@ startGameBtn.addEventListener("click", () => {
 
   const fightTimeline = gsap.timeline({}).pause();
   const choicesContainer = document.querySelector(".choices-container");
-  const timerCssRule = CSSRulePlugin.getRule(".rpg-text-box:before");
 
   fightTimeline
     .to(".start-game-btn-container", { opacity: 0, display: "none" })
@@ -155,7 +154,7 @@ startGameBtn.addEventListener("click", () => {
     .add(() => showTextBox(currentTaunt.text))
     .add(() => changeOptions(currentTaunt.options), "+=1")
     // add class timer and set data-timer-total and update data-timer-current. should be 6 seconds
-    .add(() => showTimer(questionTimer), "+=1")
+    // .add(() => showTimer(questionTimer), "+=1")
     .play();
 });
 
@@ -228,8 +227,8 @@ function highlightChoice(direction) {
     .call(() => (currentTaunt = getRandomTaunt()))
     .add(() => showTextBox(currentTaunt.text))
     .add(() => changeOptions(currentTaunt.options), "+=1")
-    .call(() => interactionAllowed = true)
-    .add(() => showTimer(questionTimer), "+=1");
+    .call(() => interactionAllowed = true);
+    // .add(() => showTimer(questionTimer), "+=1");
 
   return highlightTimeline.play();
 }
