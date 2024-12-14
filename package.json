@@ -1,0 +1,15 @@
+{
+  "name": "@kibibit/pirate-fight",
+  "version": "1.0.0",
+  "description": "",
+  "main": "SplitText.min.js",
+  "scripts": {
+    "build": "sass style.scss style.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.83.0"
+  }
+}
