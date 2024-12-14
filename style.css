@@ -92,6 +92,16 @@ body {
   animation: gelatine 1s infinite;
   transition: 250ms opacity;
 }
+.rpg-text-box:before {
+  content: "";
+  position: absolute;
+  display: block;
+  left: 0;
+  width: 0%;
+  bottom: 0;
+  height: 4px;
+  background: hsl(348, 100%, 61%);
+}
 
 @media (max-width: 520px) {
   .rpg-text-box {

@@ -99,6 +99,18 @@ body {
         animation: gelatine 1s infinite;
         transition: 250ms opacity;
     }
+
+    &:before {
+        content: '';
+        position: absolute;
+        display: block;
+        left: 0;
+        width: 0%;
+        bottom: 0;
+        height: 4px;
+        background: hsl(348, 100%, 61%);
+        // transition: all 1s linear;
+    }
 }
 
 @media (max-width: 520px) {
