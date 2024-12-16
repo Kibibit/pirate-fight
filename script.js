@@ -2,7 +2,7 @@ let gameStarted = false; // Flag to track if the game has started
 let selectedChoiceDirection = null; // Tracks the currently selected choice
 let currentTaunt = null;
 const getRandomTaunt = getTauntsShuffler();
-const questionTimer = 10; // Time in seconds to answer each question
+const questionTimer = 15; // Time in seconds to answer each question
 let currentTimerAnimation = null; // Tracks the current timer animation timeline
 let interactionAllowed = true; // Flag to track if user interaction is allowed
 
@@ -40,6 +40,17 @@ function showTextBox(text, totalTime = 0.06) {
 
   // Create and store the text animation timeline
   currentTextTimeline = new TimelineMax({})
+    .call(() => {
+      const existingDivTimer = document.querySelector(".timer");
+
+      if (existingDivTimer) {
+        return;
+      }
+
+      const timerDiv = document.createElement("div");
+      timerDiv.className = "timer";
+      textBoxText.appendChild(timerDiv);
+    })
     .call(() => textBoxText.classList.remove("cont-dot"))
     .call(() => textBoxText.classList.add("visible"))
     .staggerFrom(
@@ -129,6 +140,7 @@ timeline
       ),
     "+=11"
   )
+  .addLabel("block10")
   .to(".start-game-btn-container", { opacity: 1, display: "flex" });
 
 const clickMeBtn = document.querySelector(".click-me");
@@ -154,21 +166,20 @@ startGameBtn.addEventListener("click", () => {
     .add(() => showTextBox(currentTaunt.text))
     .add(() => changeOptions(currentTaunt.options), "+=1")
     // add class timer and set data-timer-total and update data-timer-current. should be 6 seconds
-    // .add(() => showTimer(questionTimer), "+=1")
+    .add(() => showTimer(questionTimer), "+=1")
     .play();
 });
 
 function showTimer(secondsTotal = questionTimer) {
-  const timerCssRule = CSSRulePlugin.getRule(".rpg-text-box:before");
   const timerTimeline = gsap.timeline({});
   currentTimerAnimation = timerTimeline;
 
   timerTimeline
-    .to(timerCssRule, 0.3, { cssRule: { width: "100%" } })
+    .to(".timer", 0.3, { width: "100%" })
     // count down the timer
-    .to(timerCssRule, secondsTotal, { cssRule: { width: '0%' } }, "+=1");
+    .to(".timer", secondsTotal, { width: "0%" }, "+=1");
 
-  return timerTimeline;;
+  return timerTimeline;
 }
 
 function hideChoices() {
@@ -205,7 +216,7 @@ function highlightChoice(direction) {
   const allChoices = choicesContainer.querySelector(".choice");
 
   highlightTimeline
-    .call(() => interactionAllowed = false)
+    .call(() => (interactionAllowed = false))
     .call(() => currentTimerAnimation.kill())
     .call(() => {
       choicesContainer.classList.add("decision-made");
@@ -227,11 +238,26 @@ function highlightChoice(direction) {
     .call(() => (currentTaunt = getRandomTaunt()))
     .add(() => showTextBox(currentTaunt.text))
     .add(() => changeOptions(currentTaunt.options), "+=1")
-    .call(() => interactionAllowed = true);
-    // .add(() => showTimer(questionTimer), "+=1");
+    .call(() => (interactionAllowed = true))
+    .add(() => showTimer(questionTimer), "+=1");
 
   return highlightTimeline.play();
 }
+
+document.querySelectorAll(".choice").forEach((choice) => {
+  choice.addEventListener("click", () => {
+    if (gameStarted && interactionAllowed) {
+      const direction = choice.classList.contains("top")
+        ? "top"
+        : choice.classList.contains("bottom")
+        ? "bottom"
+        : choice.classList.contains("left")
+        ? "left"
+        : "right";
+      highlightChoice(direction);
+    }
+  });
+});
 
 document.addEventListener("keydown", (event) => {
   if (gameStarted && interactionAllowed) {
@@ -246,35 +272,15 @@ document.addEventListener("keydown", (event) => {
     }
   } else if (event.code === "Space") {
     event.preventDefault(); // Prevent default scrolling behavior
+    handleSkipText();
+  }
+});
 
-    const labels = Object.keys(timeline.labels);
-    const currentLabel = labels[currentLabelIndex];
-
-    if (isAnimating) {
-      // Skip character animation
-      if (currentTextTimeline) {
-        currentTextTimeline.progress(1); // Move timeline to its end
-        // currentTextTimeline.kill(); // Kill the current animation timeline
-      }
-
-      const textBoxText = document.getElementById("textbox");
-      const chars = textBoxText.querySelectorAll(".kb-char");
-
-      // Show all characters immediately
-      chars.forEach((char) => {
-        char.style.opacity = "1";
-      });
-
-      isAnimating = false; // Mark animation as completed
-    } else {
-      // Move to the next label
-      currentLabelIndex += 1;
-      if (currentLabelIndex < labels.length) {
-        const nextLabel = labels[currentLabelIndex];
-        timeline.seek(nextLabel); // Seek to the next label
-        timeline.play(); // Play from the new label if paused
-      }
-    }
+// Handle skipping text with clicks before the game starts
+document.body.addEventListener("click", (event) => {
+  // Check if the game hasn't started and the click is not on a button
+  if (!gameStarted && !event.target.closest("button")) {
+    handleSkipText();
   }
 });
 
@@ -458,4 +464,55 @@ function getTaunts() {
       ]
     }
   ];
+}
+
+function handleSkipText() {
+  const labels = Object.keys(timeline.labels);
+  const nextLabel = getNextLabel();
+
+  if (isAnimating) {
+    // Skip character animation
+    if (currentTextTimeline) {
+      currentTextTimeline.progress(1); // Move timeline to its end
+    }
+
+    const textBoxText = document.getElementById("textbox");
+    const chars = textBoxText.querySelectorAll(".kb-char");
+
+    // Show all characters immediately
+    chars.forEach((char) => {
+      char.style.opacity = "1";
+    });
+
+    isAnimating = false; // Mark animation as completed
+  } else {
+    if (nextLabel) {
+      timeline.seek(nextLabel); // Seek to the next label
+      timeline.play(); // Play from the new label if paused
+    }
+  }
+}
+
+function getNextLabel() {
+  const labels = Object.keys(timeline.labels);
+
+  const currentTime = timeline.time();
+
+  const timelineLabels = labels
+    .map((label) => ({
+      name: label,
+      time: timeline.labels[label]
+    }))
+    .sort((a, b) => a.time - b.time);
+
+  // Find the first label that occurs after the current time
+  let nextLabel = null;
+  for (let i = 0; i < timelineLabels.length; i++) {
+    if (timelineLabels[i].time > currentTime) {
+      nextLabel = timelineLabels[i].name;
+      break;
+    }
+  }
+
+  return nextLabel;
 }

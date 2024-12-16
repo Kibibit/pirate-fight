@@ -57,6 +57,7 @@ body {
 }
 
 .rpg-text-box {
+    user-select: none;
     overflow: hidden;
     color: black;
     height: 100px;
@@ -100,8 +101,8 @@ body {
         transition: 250ms opacity;
     }
 
-    &:before {
-        content: '';
+    // &:before,
+    .timer {
         position: absolute;
         display: block;
         left: 0;
@@ -237,6 +238,7 @@ button {
 }
 
 .choice {
+    cursor: pointer;
     position: absolute;
     width: max-content;
     max-width: 250px;
