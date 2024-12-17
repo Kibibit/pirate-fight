@@ -52,6 +52,30 @@ body {
   z-index: 1;
 }
 
+.pirate-1 {
+  z-index: 10;
+  position: absolute;
+  right: 0;
+  height: 215px;
+  bottom: 233px;
+}
+
+.pirate-2 {
+  z-index: 10;
+  position: absolute;
+  left: 5px;
+  height: 322px;
+  bottom: 233px;
+}
+
+.pirate-3 {
+  z-index: 10;
+  position: absolute;
+  right: 67px;
+  height: 95px;
+  bottom: 200px;
+}
+
 .rpg-text-box {
   user-select: none;
   overflow: hidden;
